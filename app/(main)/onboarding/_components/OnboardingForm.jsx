@@ -17,17 +17,28 @@ import {
 } from "@/components/ui/card";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import useFetch from "@/hooks/use-fetch";
+import { updateUser } from "@/actions/user";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 const OnboardingForm = ({ industries }) => {
   const [selectedIndustry, setSelectedIndustry] = useState(null);
 
+  const {
+    data: updateResult,
+    fn: updateUserFn,
+    loading: updateLoading,
+  } = useFetch(updateUser);
+
   const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -39,13 +50,33 @@ const OnboardingForm = ({ industries }) => {
   });
 
   const onSubmit = async (values) => {
-    console.log(values);
-    
+    // console.log(values);
+    try {
+      const formattedIndustry = `${values.industry}-${values.subIndustry
+        .toLowerCase()
+        .replace(/ /g, "-")}`;
+      const data = {
+        ...values,
+        industry: formattedIndustry,
+      };
+      await updateUserFn(data);
+    } catch (error) {
+      console.error("Onboarding Error", error);
+    }
   };
+
+  useEffect(() => {
+    console.log("update Result", updateResult);
+    if (updateResult?.success && !updateLoading) {
+      toast.success("Profile Updated Successfully");
+      router.push("/dashboard");
+      router.refresh();
+    }
+  }, [updateResult, updateLoading]);
 
   const watchIndustry = watch("industry");
   console.log(watchIndustry);
-  
+
   return (
     <div className="flex items-center justify-center bg-background">
       <Card className="w-full max-w-lg mt-10 mx-2">
@@ -167,7 +198,15 @@ const OnboardingForm = ({ industries }) => {
                 <p className="text-sm text-red-500">{errors.bio.message}</p>
               )}
             </div>
-            <Button type="submit" className="w-full">Complete Profile</Button>
+            <Button type="submit" className="w-full" disabled={updateLoading}>
+              {updateLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
+                </>
+              ) : (
+                "Complete Profile"
+              )}
+            </Button>
           </form>
         </CardContent>
       </Card>
