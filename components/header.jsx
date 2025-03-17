@@ -2,7 +2,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import {
@@ -11,7 +11,7 @@ import {
   GraduationCap,
   LayoutDashboard,
   PenBox,
-  StarsIcon
+  StarsIcon,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,7 +19,7 @@ import { Button } from "./ui/button";
 import { checkUser } from "@/lib/checkUser";
 
 const Header = async () => {
-  await checkUser()
+  await checkUser();
   return (
     <header className="fixed top-0 w-full border-b bg-background/80 backdrop-blur-md z-50 supports-[backdrop-filter]:bg-background/60">
       <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -43,7 +43,7 @@ const Header = async () => {
             </Link>
 
             <DropdownMenu>
-              <DropdownMenuTrigger>
+              <DropdownMenuTrigger asChild>
                 <Button>
                   <StarsIcon className="h-4 w-4" />
                   <span className="hidden md:block">Industry Insights</span>
@@ -86,8 +86,8 @@ const Header = async () => {
                 elements: {
                   avatarBox: "w-10 h-10",
                   userButtonPopoverCard: "shadow-xl",
-                  userPreviewMainIdentifier: "font-semibold"
-              }
+                  userPreviewMainIdentifier: "font-semibold",
+                },
               }}
               afterSignOutUrl="/"
             />
