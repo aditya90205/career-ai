@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Sensai - AI Career Coach",
+  title: "CareerAI - AI Career Coach",
   description:
     "Sensai is an AI career coach that helps you land your dream job.",
 };
